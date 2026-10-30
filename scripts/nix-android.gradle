@@ -1,0 +1,31 @@
+// Forces the SDK tool versions (NDK, build-tools, compileSdk) provided by the
+// Nix androidenv onto every Android subproject, including plugin subprojects
+// (jni, kolibri, app_links, ...). Without this, AGP tries to auto-install its
+// default versions into the read-only Nix store and the build fails.
+//
+// afterEvaluate is used because plugins set these inside their own android {}
+// block, and AGP resolves the concrete tool paths when configuring tasks, which
+// happens after project evaluation.
+def ndk = System.getenv("KOMET_NDK_VERSION")
+def buildTools = System.getenv("KOMET_BUILD_TOOLS_VERSION")
+def compileSdk = System.getenv("KOMET_COMPILE_SDK")
+def cmakeVersion = System.getenv("KOMET_CMAKE_VERSION")
+
+gradle.allprojects { project ->
+    project.afterEvaluate {
+        def android = project.extensions.findByName("android")
+        if (android == null) return
+        if (ndk != null && !ndk.isEmpty()) {
+            android.ndkVersion = ndk
+        }
+        if (buildTools != null && !buildTools.isEmpty()) {
+            android.buildToolsVersion = buildTools
+        }
+        if (compileSdk != null && !compileSdk.isEmpty()) {
+            android.compileSdkVersion = compileSdk.toInteger()
+        }
+        if (cmakeVersion != null && !cmakeVersion.isEmpty()) {
+            android.externalNativeBuild?.cmake?.version = cmakeVersion
+        }
+    }
+}

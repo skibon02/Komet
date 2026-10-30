@@ -57,6 +57,9 @@ class _AdaptiveShellState extends State<AdaptiveShell> {
   }
 
   Future<void> _maybeCheckUpdate() async {
+    if (!const bool.fromEnvironment('KOMET_AUTO_UPDATE', defaultValue: false)) {
+      return;
+    }
     if (DebugTest.enabled) return;
     final update = await UpdateChecker.check();
     if (update == null || !mounted) return;

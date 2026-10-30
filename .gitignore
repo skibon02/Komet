@@ -10,8 +10,19 @@
 .idea/
 *.iml
 
-# Flutter metadata
-.metadata
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+
+# Nix devShell build caches
+.rustup/
+
 
 # OS
 .DS_Store
